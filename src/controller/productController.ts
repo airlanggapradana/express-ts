@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import prisma from "../../prisma/prisma";
 
 export const getAllProducts = async (
@@ -19,7 +19,7 @@ export const getAllProducts = async (
         ? "No products found"
         : "All products fetched successfully";
 
-    res.status(200).json({
+    res.status(products ? 200 : 400).json({
       message,
       result: products,
     });
@@ -39,15 +39,9 @@ export const getProductById = async (
       where: { id: productId },
     });
 
-    if (!product) {
-      res.status(404).json({
-        message: "Product not found",
-      });
-    }
-
-    res.status(200).json({
-      message: "Product fetched successfully",
-      result: product,
+    res.status(product ? 200 : 400).json({
+      message: product ? "Product fetched successfully" : "Product not found",
+      result: product ? product : null,
     });
   } catch (error) {
     next(error);
@@ -71,9 +65,34 @@ export const createProduct = async (
       },
     });
 
-    res.status(201).json({
-      message: "Product created successfully",
+    res.status(newProduct ? 201 : 300).json({
+      message: newProduct
+        ? "Product created successfully"
+        : "Failed to create product",
       result: newProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const productId = req.params.id;
+
+    const product = await prisma.product.delete({
+      where: { id: productId },
+    });
+
+    res.status(product ? 200 : 500).json({
+      message: product
+        ? "Product deleted successfully"
+        : "Failed to delete product",
+      result: product,
     });
   } catch (error) {
     next(error);
