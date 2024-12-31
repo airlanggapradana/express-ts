@@ -98,3 +98,32 @@ export const deleteProduct = async (
     next(error);
   }
 };
+
+export const updateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const productId = req.params.id;
+    const { name, price, description } = req.body;
+
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        name,
+        price,
+        description,
+      },
+    });
+
+    res.status(updatedProduct ? 200 : 500).json({
+      message: updatedProduct
+        ? "Product updated successfully"
+        : "Failed to update product",
+      result: updatedProduct,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
