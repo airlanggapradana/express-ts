@@ -60,6 +60,16 @@ A project that teaches me how to establish a REST-API using Express with Typescr
 | :-------- | :------- | :-------------------------------- |
 | `user_id`      | `string` | **Required** |
 
+#### Login
+
+```http
+  POST /login
+```
+
+| Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email`      | `string` | **Required** |
+| `password`      | `string` | **Required** |
 
 ## Tech Stack
 
