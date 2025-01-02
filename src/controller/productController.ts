@@ -1,11 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import prisma from "../../prisma/prisma";
 
-export const getAllProducts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const { limit } = req.query;
     let products = await prisma.product.findMany();
@@ -24,15 +20,14 @@ export const getAllProducts = async (
       result: products,
     });
   } catch (error) {
-    next(error);
+    res.status(500).send({
+      message: "Failed to fetch products",
+      error: error,
+    });
   }
 };
 
-export const getProductById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getProductById = async (req: Request, res: Response) => {
   try {
     const productId = req.params.id;
     const product = await prisma.product.findUnique({
@@ -44,15 +39,14 @@ export const getProductById = async (
       result: product ? product : null,
     });
   } catch (error) {
-    next(error);
+    res.status(500).send({
+      message: "Failed to fetch product",
+      error: error,
+    });
   }
 };
 
-export const createProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createProduct = async (req: Request, res: Response) => {
   try {
     const { name, price, description } = req.body;
 
@@ -75,15 +69,14 @@ export const createProduct = async (
       result: newProduct,
     });
   } catch (error) {
-    next(error);
+    res.status(500).send({
+      message: "Failed to create product",
+      error: error,
+    });
   }
 };
 
-export const deleteProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.id;
 
@@ -98,15 +91,14 @@ export const deleteProduct = async (
       result: product,
     });
   } catch (error) {
-    next(error);
+    res.status(500).send({
+      message: "Failed to delete product",
+      error: error,
+    });
   }
 };
 
-export const updateProduct = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateProduct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.id;
     const { name, price, description } = req.body;
@@ -127,6 +119,9 @@ export const updateProduct = async (
       result: updatedProduct,
     });
   } catch (error) {
-    next(error);
+    res.status(500).send({
+      message: "Failed to update product",
+      error: error,
+    });
   }
 };
